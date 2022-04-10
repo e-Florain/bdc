@@ -1,0 +1,122 @@
+.message {
+    padding: 1rem;
+
+    background: #eff8ff;
+    color: #2779bd;
+
+    border-color: #6cb2eb;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 4px;
+    margin-bottom: 2rem;
+}
+.message.hidden {
+    display: none;
+}
+.message.success {
+    background: #e3fcec;
+    color: #1f9d55;
+    border-color: #51d88a;
+}
+.message.error {
+    background: #fcebea;
+    color: #cc1f1a;
+    border-color: #ef5753;
+}
+
+.container {
+    width: 95%;
+    max-width: 1800px;
+    font-family: FuturaLight;   
+}
+
+.page-footer {
+    background-color: #8bc34a;
+}
+
+.main {
+    margin-bottom: 2%;
+}
+
+.icons {
+    text-align: right;
+}
+
+.nav-wrapper, .nav-content, .page-footer {
+    background-color: #d7da23;
+}
+
+a.brand-logo {
+    color: #70706f;
+    font-family: FreeStyleScript;
+    font-size: 3.1rem;
+}
+
+.tabs.tabs-transparent .tab a.active {
+    color: #70706f;
+}
+
+.tabs.tabs-transparent .tab a, .tabs.tabs-transparent .tab.disabled a, .tabs.tabs-transparent .tab.disabled a:hover {
+    color: #70706f;
+}
+
+.tabs.tabs-transparent .tab a:hover {
+    color: #000000;
+}
+
+.footer-css {
+    color: #70706f;
+}
+
+nav ul a {
+    color: #70706f;
+}
+
+.btn-pink {
+    background-color: #e46b9d;
+}
+
+.btn-blue {
+    background-color: #54bcb4;
+}
+
+.btn-orange {
+    background-color: #f38e3c;
+}
+
+.btn-green {
+    background-color: #9bc43e;
+}
+
+.btn:hover, .btn-large:hover, .btn-small:hover {
+    background-color: #70706f;
+}
+
+h3 {
+    font-family: Steelfish;
+}
+
+input {
+    font-family: FuturaLight;
+}
+
+@font-face {
+    font-family: 'FreeStyleScript';
+    font-style: normal;
+    font-weight: normal;
+    src: local('FreeStyleScript'), url('/font/FREESCPT.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Steelfish';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Steelfish'), url('/font/Steelfish-Regular.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'FuturaLight';
+    font-style: normal;
+    font-weight: normal;
+    src: local('FuturaLight'), url('/font/Futura-Light.woff') format('woff');
+}
