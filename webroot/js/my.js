@@ -30,28 +30,6 @@ document.addEventListener('DOMContentLoaded', function() {
   $(document).ready(function(){
     $('.modal').modal();
   });
-  
-  /*$(document).ready(function(){
-    $.getJSON( "/associations/search", function( data ) {
-      var obj = {};
-      for(var i in data)
-      {
-        for (var x in data[i]) {
-          if (x == "name") {
-            obj[data[i][x]] = null;
-          }
-        }
-      }
-      auto(obj)
-      });
-  });*/
-
-function auto(data_arr){
-  $("#asso").autocomplete({
-      data: data_arr,
-      minLength: 1
-  });
-}
 
 function filter(controller) {
   var reg = /\/trash\:(\w+)/;
@@ -101,43 +79,6 @@ $("#filter_bdcs_text").keyup(function() {
   filter("bdcs");
 });
 
-/*$('.checkAdhsYears:checkbox').on('change', function() {
-  filter("Adhs");
-});*/
-
-$("#filter_Adhpros_text").keyup(function() {
-  filter("Adhpros");
-});
-
-/*$('.checkAdhprosYears:checkbox').on('change', function() {
-  filter("Adhpros");
-});*/
-
-function checkchanges(type) {
-  var x = document.getElementById("filenameadhpros");
-  //console.log(x);
-  var option = document.createElement("option");
-  option.text = "Kiwi";
-  /*option.value = "kee";
-  option.innerHTML = "ddd";*/
-  //x.appendChild(option);
-  //x.add(new Option("age"));
-  //var myNewOption = new Option("TheText", "TheValue");
-  //document.formadhpros.filenameadhpros.options[0] = myNewOption;
-  var url = "/cyclos/spinner";
-  $.get(url)
-    .done(function( data ) {
-      $("#spinner").html(data);
-  })
-  url = "/cyclos/checkchanges/"+type;
-  $.get(url)
-    .done(function( data ) {
-      $("#spinner").html("");
-      option.text = data;
-      x.add(option);
-  });
-}
-
 $('#selectAll').click(function(e){
   console.log("test");
   //var table= $(e.target).closest('table');
@@ -150,7 +91,7 @@ $('#selectAll').click(function(e){
 });
 
 function searchAdhById() {
-  console.log("test");
+  console.log("searchAdhById");
   var id = $("#adh_id").val();
   url = "/Transactions/getAdhs/"+id;
   $.get(url)
@@ -160,28 +101,3 @@ function searchAdhById() {
       M.updateTextFields();
   });
 }
-/*
-function applyAdh(controller) {
-  $('table [type="checkbox"]').each(function(i, chk) {
-    if (chk.checked) {
-      //console.log("Checked!", i, chk);
-      console.log(chk.name);
-      if (chk.name != "") {
-        var str = $('#adh_years option:selected').text();
-        var i=0;
-        var years = "";
-        for (i=0;i<(str.length / 4);i++) {
-          years = years+str.substr(i*4, 4)+";";
-        }
-        var url = "/"+controller+"/apply_years/"+chk.name+"/"+years;
-        console.log(url);
-        $.get(url)
-          .done(function( data ) {
-            console.log(data);
-            window.location.href = "/"+controller+"/index";
-            //$("#spinner").html(data);
-        });
-      }
-    }
-  });
-}*/

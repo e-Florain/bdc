@@ -54,14 +54,14 @@ class TransactionsController extends AppController
         $order = $this->request->getQuery('orderby') ?? "date";
         //$sort = isset($this->request->getQuery('sort')) ? $this->request->getQuery('sort') : "ASC";
         $sort = $this->request->getQuery('sort') ?? "ASC";
-        $nbitems_trashed = $this->Transactions->find()->where(['deleted' => 1])->all()->count();
-        $nbitems = $this->Transactions->find()->where(['deleted' => 0])->all()->count();
+        $nbitems_trashed = $this->Transactions->find()->where(['deleted' => 1, 'cashdesk_id' => $cashdesk_id])->all()->count();
+        $nbitems = $this->Transactions->find()->where(['deleted' => 0, 'cashdesk_id' => $cashdesk_id])->all()->count();
         if ($trasharg == "trash:true") {
             $this->set('trash_view', true);
-            $transactions = $this->Paginator->paginate($this->Transactions->find()->where(['deleted' => 1])->order([$order => $sort]));
+            $transactions = $this->Paginator->paginate($this->Transactions->find()->where(['deleted' => 1, 'cashdesk_id' => $cashdesk_id])->order([$order => $sort]));
         } else {
             $this->set('trash_view', false);
-            $transactions = $this->Paginator->paginate($this->Transactions->find()->where(['deleted' => 0])->order([$order => $sort]));
+            $transactions = $this->Paginator->paginate($this->Transactions->find()->where(['deleted' => 0, 'cashdesk_id' => $cashdesk_id])->order([$order => $sort]));
         }
         $this->set('nbitems_trashed', $nbitems_trashed);
         $this->set('nbitems', $nbitems);
@@ -295,6 +295,7 @@ class TransactionsController extends AppController
 
     public function getAdhs($id="") {
         //echo "test ".$id;
+        
         $http = new Client();
         $url = $this->florapi['url'].'/getAdhs';
         $found = false;

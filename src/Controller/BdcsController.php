@@ -5,11 +5,15 @@ namespace App\Controller;
 use Cake\Filesystem\Folder;
 use Cake\Filesystem\File;
 use Cake\I18n\FrozenTime;
+use Cake\Http\Client;
 
 class BdcsController extends AppController
 {
-
-    //private $list_payment_type = array("Florains", "Chèques", "Espèces", "HelloAsso");
+    private $florapi = array(
+        "url" => "http://10.0.3.184",
+        "x-api-key" => "ITPeApnIUQK5trRjFJ2HLfM2e9VsrzPm5BL1FNbh4aVHCLfSnUGpUoKc7TFAJNVm"
+    );
+    
     private $list_keys = array(
         "id" => "Id",
         "name" => "Nom",
@@ -88,7 +92,8 @@ class BdcsController extends AppController
 
     public function add()
     {
-        //$this->set('list_payment_type', $this->list_payment_type);
+        $adhpros = $this->getAdhpros();
+        $this->set(compact('adhpros'));
         if ($this->request->is('post')) {            
             $bdc = $this->Bdcs->newEmptyEntity();
             $data = $this->request->getData();
@@ -265,6 +270,47 @@ class BdcsController extends AppController
             ['download' => true, 'name' => $strfile]
         );
         return $response;
+    }
+
+    public function syncBdcs() {
+        $bdcs = $this->Bdcs->find()->where(['deleted' => 0])->all();
+        $adhpros = $this->getAdhpros();
+        $datas = array();
+        foreach ($adhpros as $adhpro) {
+            $found = false;
+            foreach ($bdcs as $bdc) {
+                if ($bdc->name == $adhpro['name']) {
+                    $found = true;
+                }
+            }
+            if (!$found) {
+                $newbdc = $this->Bdcs->newEmptyEntity();
+                $data = array();
+                $data['name'] = $adhpro['name'];
+                $data['address'] = $adhpro['street'];
+                $data['city'] = $adhpro['city'];
+                $data['postcode'] = $adhpro['zip'];
+                $data['phonenumber'] = $adhpro['phone'];
+                $newbdc = $this->Bdcs->patchEntity($newbdc, $data);
+                $this->Bdcs->save($newbdc);
+            }
+        }
+        $this->Flash->success(__('Synchronisation des bureaux'));
+        return $this->redirect('/bdcs/index');
+    }
+
+    public function getAdhpros() {
+        $http = new Client();
+        $url = $this->florapi['url'].'/getAdhpros?account_cyclos=1';
+        $found = false;
+        $response = $http->get($url, [], [
+            'headers' => [
+                'x-api-key' => $this->florapi['x-api-key'],
+                'Content-Type' => 'application/json'
+                ]
+        ]);
+        $results = $response->getJson();
+        return $results;
     }
 }
 ?>

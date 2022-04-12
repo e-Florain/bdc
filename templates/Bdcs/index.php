@@ -1,7 +1,9 @@
 <!-- File: templates/bdcs/index.php -->
+
 <br>
-<a class="btn-floating btn-large waves-effect waves-light btn-pink" href="/bdcs/add"><i class="material-icons">add</i></a>
-<a class="btn-floating btn-large waves-effect waves-light btn-blue" href="/bdcs/importexport"><i class="material-icons">import_export</i></a>
+<a class="btn-floating btn-large waves-effect waves-light btn-pink" href="/bdcs/syncBdcs"><i class="material-icons">autorenew</i></a>
+<!--<a class="btn-floating btn-large waves-effect waves-light btn-pink" href="/bdcs/add"><i class="material-icons">add</i></a>-->
+<!--<a class="btn-floating btn-large waves-effect waves-light btn-blue" href="/bdcs/importexport"><i class="material-icons">import_export</i></a>-->
 <h3>
     <div id='nbbdcs'>Bureaux de change 
     <?php if ($trash_view) { 
@@ -111,7 +113,6 @@ if ($trash_view) {
         </td>
         <td class="icons">
             <!--<a <?php echo 'href="/bdcs/view/'.$bdc->id.'"'; ?> class="btn-floating waves-effect waves-light btn-green"><i class="material-icons">remove_red_eye</i></a>-->
-            <a <?php echo 'href="/bdcs/edit/'.$bdc->id.'"'; ?> class="btn-floating waves-effect waves-light btn-green"><i class="material-icons">edit</i></a>
             <a <?php echo 'href="/bdcs/delete/'.$bdc->id.'"'; ?> class="btn-floating waves-effect waves-light btn-orange"><i class="material-icons">delete</i></a>
             <?php if ($trash_view): ?>
             <a <?php echo 'href="/bdcs/restore/'.$bdc->id.'"'; ?> class="btn-floating waves-effect waves-light btn-orange"><i class="material-icons">restore_from_trash</i></a>
