@@ -16,11 +16,11 @@
 <?php
 if ($trash_view) {
 ?>
-    <a href="/Transactions/index">x Fermer la corbeille</a>
+    <a href="/Transactions/index?cashdesk_id=<?php echo $cashdesk_id; ?>">x Fermer la corbeille</a>
 <?php
 } else {
 ?>
-    <a href="/Transactions/index/trash:true">Corbeille (<?php echo $nbitems_trashed; ?>)</a>
+    <a href="/Transactions/index/trash:true?cashdesk_id=<?php echo $cashdesk_id; ?>">Corbeille (<?php echo $nbitems_trashed; ?>)</a>
 <?php
 }
 ?>

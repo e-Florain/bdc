@@ -4,14 +4,14 @@
     <input name="id" id="id" <?php echo 'value="'.$cashdesk->id.'"'; ?> type="hidden" class="validate">
       <div class="row">
         <div class="input-field col s6">
-          <input name="name" id="name" <?php echo 'value="'.$cashdesk->name.'"'; ?> type="text" class="validate">
-          <label for="name">Nom</label>
+          <input name="description" id="description" <?php echo 'value="'.$cashdesk->description.'"'; ?> type="text" class="validate">
+          <label for="description">Description</label>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s6">
-          <input name="description" id="description" <?php echo 'value="'.$cashdesk->description.'"'; ?> type="text" class="validate">
-          <label for="description">Description</label>
+          <input name="received_amount" id="received_amount" <?php echo 'value="'.$cashdesk->received_amount.'"'; ?> type="text" required class="validate">
+          <label for="received_amount">Montant initial</label>
         </div>
       </div>
     <button class="btn waves-effect waves-light" type="submit" name="action">Modifier

@@ -174,15 +174,15 @@ class TransactionsController extends AppController
         if ($transaction['deleted'] == 1) {
             $result = $this->Transactions->delete($transaction);
             $this->Flash->success(__('La transaction a été effacé.'));
-            return $this->redirect('/Transactions/index/trash:true');
+            return $this->redirect('/Transactions/index/trash:true?cashdesk_id='.$transaction->cashdesk_id);
         } else {
             $transaction['deleted'] = 1;
             if ($this->Transactions->save($transaction)) {
                 $this->Flash->success(__('La transaction a été effacé.'));
-                return $this->redirect('/Transactions/index');
+                return $this->redirect('/Transactions/index?cashdesk_id='.$transaction->cashdesk_id);
             } else {
                 $this->Flash->error(__('Erreur : Impossible d\'effacer la transaction.'));
-                return $this->redirect('/Transactions/index');
+                return $this->redirect('/Transactions/index?cashdesk_id='.$transaction->cashdesk_id);
             }
         }
     }
@@ -194,7 +194,7 @@ class TransactionsController extends AppController
             $transaction['deleted'] = 0;
             if ($this->Transactions->save($transaction)) {
                 $this->Flash->success(__('La transaction a été restauré.'));
-                return $this->redirect('/Transactions/index');
+                return $this->redirect('/Transactions/index?cashdesk_id='.$transaction->cashdesk_id);
             }
         }
     }

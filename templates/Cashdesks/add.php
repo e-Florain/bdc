@@ -17,8 +17,8 @@
       </div>
       <div class="row">
         <div class="input-field col s6">
-          <input name="amount" id="amount" type="text" required class="validate">
-          <label for="amount">Montant initial</label>
+          <input name="received_amount" id="received_amount" type="text" required class="validate">
+          <label for="received_amount">Montant initial</label>
         </div>
       </div>
     <button class="btn waves-effect waves-light" type="submit" name="action">Ajouter

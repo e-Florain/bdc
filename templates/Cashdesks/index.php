@@ -60,6 +60,12 @@ if ($trash_view) {
             '?' => ['orderby' => "description"]
         ]); ?>
         </th>
+        <th><?= $this->Html->link("Montant initial", [
+            'controller' => 'cashdesks',
+            'action' => 'index',
+            '?' => ['orderby' => "received_amount"]
+        ]); ?>
+        </th>
         <th><?= $this->Html->link("Montant", [
             'controller' => 'cashdesks',
             'action' => 'index',
@@ -90,6 +96,9 @@ if ($trash_view) {
         </td>
         <td>
             <?= $cashdesk->description ?>
+        </td>
+        <td>
+            <?= $cashdesk->received_amount ?>
         </td>
         <td>
             <?= $cashdesk->amount ?>
