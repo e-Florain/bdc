@@ -136,7 +136,7 @@ class CashdesksController extends AppController
     public function delete($id) {
         $cashdesk = $this->Cashdesks->get($id);
         if ($cashdesk['deleted'] == 1) {
-            $result = $this->Cashdesks->delete($adhpro);
+            $result = $this->Cashdesks->delete($cashdesk);
             $this->Flash->success(__('La caisse a été effacée.'));
             return $this->redirect('/cashdesks/index');
         } else {
@@ -173,88 +173,6 @@ class CashdesksController extends AppController
         return $this->response->withType('application/json')
             ->withStringBody(json_encode($cashdesks));
 
-    }
-
-    public function importexport()
-    {
-
-    }
-
-    public function import()
-    {
-        $uploadDatas = array();
-        if ($this->request->is('post')) {
-            $data = $this->request->getData()["uploadfile"];
-            
-            if(!empty($data)){
-                $fileName = $data->getClientFilename();
-                //var_dump($fileName);
-                $stream = $data->getStream();
-                $infos = explode("\n", $stream);
-                $data = array();
-                $i=0;
-                $keys = str_getcsv($infos[0]);
-                //var_dump($infos);
-                for ($i=1;$i<count($infos);$i++) {
-                    $datacsv = str_getcsv($infos[$i]);
-                    if (count($keys) == count($datacsv)) {
-                        $data = array_combine($keys, $datacsv); 
-                        if ($data != FALSE) {
-                            $cashdesk = $this->Cashdesks->newEmptyEntity();
-                            $cashdesk = $this->Cashdesks->patchEntity($cashdesk, $data);
-                            //var_dump($adh);
-                            if ($this->Cashdesks->save($cashdesk)) {
-                                $data['imported'] = 1;
-                                $data['msgerr'] = '';
-                            } else {
-                                $errors = $cashdesk->getErrors()["status"];
-                                $data['msgerr'] = array_shift($errors);
-                                $data['imported'] = 0;
-                            }
-                            $uploadDatas[] = $data;
-                        }
-                    }
-                }
-
-                $this->set('list_keys', $this->list_keys);
-                $this->set(compact('uploadDatas'));
-            }else{
-                $this->Flash->error(__('Unable to upload file, please try again.'));
-            }
-        }
-    }
-
-    public function export()
-    {
-        $now = FrozenTime::now();
-        $strfile = $now->format('Y-m-d').'_export_cashdesks.csv';
-        $cashdesks = $this->Cashdesks->find();
-        $file = new File($strfile, true, 0644);
-        $exportCSV="";
-        $i=0;
-        foreach($this->list_keys as $key=>$keyname) {
-            if ($i==(count($this->list_keys)-1)) {
-                $exportCSV=$exportCSV.$key;
-            } else {
-                $exportCSV=$exportCSV.$key.",";
-            }
-            $i++;
-        }
-        $exportCSV=$exportCSV."\n";
-        $file->write($exportCSV);
-        foreach ($cashdesks as $cashdesk) {
-            $infos=$cashdesk->id.",".$cashdesk->name.",".$cashdesk->date."\n";
-            $exportCSV=$exportCSV.$infos;
-            $file->append($infos);
-        }
-        $path = $file->path;
-        $file->close();
-        
-        $response = $this->response->withFile(
-            $path = $file->path,
-            ['download' => true, 'name' => $strfile]
-        );
-        return $response;
     }
 
 }

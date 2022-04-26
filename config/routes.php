@@ -48,7 +48,7 @@ $routes->setRouteClass(DashedRoute::class);
 $routes->scope('/', function (RouteBuilder $builder) {
     // Register scoped middleware for in scopes.
     $builder->registerMiddleware('csrf', new CsrfProtectionMiddleware([
-        'httpOnly' => true,
+        'httponly' => true,
     ]));
 
     /*
@@ -71,7 +71,7 @@ $routes->scope('/', function (RouteBuilder $builder) {
      * ...and connect the rest of 'Pages' controller's URLs.
      */
     //$builder->connect('/pages/*', ['controller' => 'Pages', 'action' => 'display']);
-    $builder->connect('/:adhpros', ['action' => 'import']);    
+    //$builder->connect('/:adhpros', ['action' => 'import']);    
     /*
      * Connect catchall routes for all controllers.
      *

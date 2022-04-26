@@ -54,22 +54,29 @@ if ($trash_view) {
         <?php
         }
         ?>
+        <!--
         <th><?= $this->Html->link("Description", [
             'controller' => 'cashdesks',
             'action' => 'index',
             '?' => ['orderby' => "description"]
         ]); ?>
-        </th>
+        </th>-->
         <th><?= $this->Html->link("Montant initial", [
             'controller' => 'cashdesks',
             'action' => 'index',
             '?' => ['orderby' => "received_amount"]
         ]); ?>
         </th>
-        <th><?= $this->Html->link("Montant", [
+        <th><?= $this->Html->link("Solde", [
             'controller' => 'cashdesks',
             'action' => 'index',
-            '?' => ['orderby' => "amount"]
+            '?' => ['orderby' => "balance"]
+        ]); ?>
+        </th>
+        <th><?= $this->Html->link("Solde Euros", [
+            'controller' => 'cashdesks',
+            'action' => 'index',
+            '?' => ['orderby' => "balance_euros"]
         ]); ?>
         </th>
         <th></th>
@@ -94,14 +101,17 @@ if ($trash_view) {
             } 
             ?>
         </td>
-        <td>
+        <!--<td>
             <?= $cashdesk->description ?>
-        </td>
+        </td>-->
         <td>
             <?= $cashdesk->received_amount ?>
         </td>
         <td>
-            <?= $cashdesk->amount ?>
+            <?= $cashdesk->balance ?>
+        </td>
+        <td>
+            <?= $cashdesk->balance_euros ?>
         </td>
         <td class="icons"> 
             <a <?php echo 'href="/cashdesks/edit/'.$cashdesk->id.'"'; ?> class="btn-floating btn-large waves-effect waves-light btn-green"><i class="material-icons">edit</i></a>

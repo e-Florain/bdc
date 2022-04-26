@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
   $(document).ready(function(){
     $('.modal').modal();
   });
-
+  
 function filter(controller) {
   var reg = /\/trash\:(\w+)/;
   var resultat = reg.test(window.location.href);
@@ -93,11 +93,111 @@ $('#selectAll').click(function(e){
 function searchAdhById() {
   console.log("searchAdhById");
   var id = $("#adh_id").val();
-  url = "/Transactions/getAdhs/"+id;
+  url = "/Transactions/getAdhsById/"+id;
   $.get(url)
     .done(function( data ) {
       console.log(data);
-      $("#adh_name").val(data);
+      if (data == "0") {
+        $("#adh_id").prop('class', 'invalid');
+        $("#btn_add").prop('disabled', true);
+      } else {
+        $("#btn_add").prop('disabled', false);
+        $("#adh_name").val(data);
+      }
       M.updateTextFields();
   });
 }
+
+/*function searchAdhByName() {
+  console.log("searchAdhByName");
+  var name = $("#adh_name").val();
+  console.log(name);
+  url = "/Transactions/getAdhsByName/"+name;
+  $.get(url)
+    .done(function( data ) {
+      console.log(data);
+      if (data == "0") {
+        $("#adh_id").prop('class', 'invalid');
+        $("#btn_add").prop('disabled', true);
+      } else {
+        $("#btn_add").prop('disabled', false);
+        //$("#adh_name").val(data);
+        $('#adh_name').autocomplete({
+          data: {
+            "Apple": null,
+            "Microsoft": null,
+            "Microsoft1": null,
+            "Microsoft2": null,
+            "Microsoft3": null,
+            "Google": 'https://placehold.it/250x250'
+          },
+        });
+      }
+      M.updateTextFields();
+  });
+}*/
+
+$(document).ready(function(){
+  $('#adh_name').autocomplete({
+    data: {
+      "Apple": null,
+      "Microsoft": null,
+      "Google": 'https://placehold.it/250x250'
+    },
+  });
+});
+
+$( "#adh_name" ).change(function() {
+  var name = $("#adh_name").val();
+  console.log("change adh_name "+name);
+  let tag = name.match(/([A-Z]+)\s([A-Z]\w+)/);
+  var lastname=tag[1];
+  var firstname=tag[2];
+  url = "/Transactions/getAdhsByName?lastname="+lastname+"&firstname="+firstname;
+    $.get(url)
+      .done(function( data ) {
+        const obj = JSON.parse(data);
+        var arr = new Array();
+        $.each(obj, function(k, v) {
+          console.log(Object.values(v)[0]);
+          $("#adh_id").val(Object.values(v)[0]);
+        });
+    });
+});
+
+$( "#adh_name" ).keypress(function() {
+  var name = $("#adh_name").val();
+  if (name.length > 1) {
+    console.log( "Handler for .keypress() "+name+" called." );
+    url = "/Transactions/getAdhsByName?lastname="+name;
+    $.get(url)
+      .done(function( data ) {
+        const obj = JSON.parse(data);
+        var arr = new Array();
+        $.each(obj, function(k, v) {
+          arr[Object.keys(v)[0]] = null;
+        });
+        $('#adh_name').autocomplete({
+          data: arr,
+        });
+        /*if (data == "0") {
+          $("#adh_id").prop('class', 'invalid');
+          $("#btn_add").prop('disabled', true);
+        } else {
+          $("#btn_add").prop('disabled', false);
+          //$("#adh_name").val(data);
+          $('#adh_name').autocomplete({
+            data: {
+              "Apple": null,
+              "Microsoft": null,
+              "Microsoft1": null,
+              "Microsoft2": null,
+              "Microsoft3": null,
+              "Google": 'https://placehold.it/250x250'
+            },
+          });
+        }
+        M.updateTextFields();*/
+    });
+  }
+});

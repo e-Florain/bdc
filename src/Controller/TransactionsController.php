@@ -19,8 +19,11 @@ class TransactionsController extends AppController
         "date" => "Date",
         "adh_id" => "Numéro d'adhérent",
         "adh_name" => "Nom d'adhérent",
-        "amount" => "Montant"
+        "amount" => "Montant",
+        "payment_type" => "Type de paiement"
     );
+
+    private $list_payment_type = array("Chèques", "Espèces");
 
     public function beforeFilter(\Cake\Event\EventInterface $event)
     {
@@ -68,7 +71,7 @@ class TransactionsController extends AppController
         $this->set('cashdesk_id', $cashdesk_id);
         $this->set(compact('transactions'));
         $this->set('list_keys', $this->list_keys);
-        $this->getAdhs();
+        //$this->getAdhsById();
     }
     /*
     public function indexAjax($trasharg="trash:false", $strarg="")
@@ -109,6 +112,7 @@ class TransactionsController extends AppController
     {
         $cashdesk_id = $this->request->getQuery('cashdesk_id');
         $this->set('cashdesk_id', $cashdesk_id);
+        $this->set('list_payment_type', $this->list_payment_type);
         if ($this->request->is('post')) {            
             $data = $this->request->getData();
             $data["date"] = $data["date"]."00:00:00";
@@ -201,18 +205,18 @@ class TransactionsController extends AppController
 
     public function importexport()
     {
-
+        $cashdesk_id = $this->request->getQuery('cashdesk_id');
+        $this->set('cashdesk_id', $cashdesk_id);
     }
 
-    public function import()
+    public function import($cashdesk_id)
     {
+        $this->set('cashdesk_id', $cashdesk_id);
         $uploadDatas = array();
         if ($this->request->is('post')) {
             $data = $this->request->getData()["uploadfile"];
-            
             if(!empty($data)){
                 $fileName = $data->getClientFilename();
-                //var_dump($fileName);
                 $stream = $data->getStream();
                 $infos = explode("\n", $stream);
                 $data = array();
@@ -222,20 +226,16 @@ class TransactionsController extends AppController
                     $datacsv = str_getcsv($infos[$i]);
                     if (count($keys) == count($datacsv)) {
                         $data = array_combine($keys, $datacsv); 
-                        //var_dump($data);
                         if ($data != FALSE) {
-                            $adhpro = $this->Adhpros->newEmptyEntity();
-                            $data["phonenumber"] = str_replace(".", "", $data["phonenumber"]);
-                            $data["phonenumber"] = str_replace(" ", "", $data["phonenumber"]);
-                            $data["date_adh"] = $data["date_adh"]."00:00:00";
-                            //var_dump($data);
-                            $adhpro = $this->Adhpros->patchEntity($adhpro, $data);
-                            var_dump($adhpro);
-                            if ($this->Adhpros->save($adhpro)) {
+                            $transaction = $this->Transactions->newEmptyEntity();
+                            $data["date"] = $data["date"]."00:00:00";
+                            $data["cashdesk_id"] = $cashdesk_id;
+                            $transaction = $this->Transactions->patchEntity($transaction, $data);
+                            if ($this->Transactions->save($transaction)) {
                                 $data['imported'] = 1;
                                 $data['msgerr'] = '';
                             } else {
-                                $errors = $adhpro->getErrors()["status"];
+                                $errors = $transaction->getErrors()["status"];
                                 $data['msgerr'] = array_shift($errors);
                                 $data['imported'] = 0;
                             }
@@ -293,7 +293,7 @@ class TransactionsController extends AppController
         return $response;
     }
 
-    public function getAdhs($id="") {
+    public function getAdhsById($id="") {
         //echo "test ".$id;
         
         $http = new Client();
@@ -301,7 +301,7 @@ class TransactionsController extends AppController
         $found = false;
         $response = $http->get($url, [], [
             'headers' => [
-                'x-api-key' => "ITPeApnIUQK5trRjFJ2HLfM2e9VsrzPm5BL1FNbh4aVHCLfSnUGpUoKc7TFAJNVm",
+                'x-api-key' => $this->florapi['x-api-key'],
                 'Content-Type' => 'application/json'
                 ]
         ]);
@@ -315,11 +315,34 @@ class TransactionsController extends AppController
                 }
             }
             if ($found == false) {
-                echo "Adhérent non trouvé";
+                //echo "Adhérent non trouvé";
+                echo "0";
             }
         } else {
             //return $results;
         }
+    }
+
+    public function getAdhsByName() {
+        $lastname = $this->request->getQuery('lastname');
+        $firstname = $this->request->getQuery('fistname');
+        $http = new Client();
+        $url = $this->florapi['url'].'/getAdhs?lastname='.$lastname.'&firstname='.$firstname;
+        $found = false;
+        $response = $http->get($url, [], [
+            'headers' => [
+                'x-api-key' => $this->florapi['x-api-key'],
+                'Content-Type' => 'application/json'
+                ]
+        ]);
+        $results = $response->getJson();
+        $arr = array();
+        foreach ($results as $result) {
+            //echo $result["lastname"]." ".$result["firstname"];
+            $arr[] = array($result["lastname"]." ".$result["firstname"] => $result["ref"]);
+        }
+        $json = json_encode($arr);
+        echo $json;
     }
 }
 ?>

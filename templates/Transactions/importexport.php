@@ -1,7 +1,7 @@
 <h4>Import</h4>
 <div class="row">
-    <a href="/templates_importexport/import_particuliers.csv">import_particuliers.csv</a>
-    <form id="importadh" class="col s12" action="/adhs/import" method="post" enctype="multipart/form-data">
+    <a href="/templates_importexport/import_transactions.csv">import_transactions.csv</a>
+    <form id="importadh" class="col s12" action="/transactions/import/<?php echo $cashdesk_id; ?>" method="post" enctype="multipart/form-data">
     <div class="row">
         <div class="input-field file-field col s6">
         <div class="btn">
@@ -30,6 +30,6 @@
 <h4>Export<h4>
 <div class="row">
     <div class="col offset-s1">
-        <a class="btn waves-effect waves-light" href="/adhs/export"><i class="material-icons right">send</i>Exporter</a>
+        <a class="btn waves-effect waves-light" href="/transactions/export"><i class="material-icons right">send</i>Exporter</a>
     </div>
 </div>
