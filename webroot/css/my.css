@@ -120,3 +120,7 @@ input {
     font-weight: normal;
     src: local('FuturaLight'), url('/font/Futura-Light.woff') format('woff');
 }
+
+#statusadh {
+    display: none;
+}

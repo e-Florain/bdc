@@ -28,7 +28,7 @@ class CashdesksController extends AppController
         }
     }
 
-    public function index($trasharg="trash:false")
+    public function index($trasharg="trash:false", $closearg="close:false")
     {
         $this->loadModel('Bdcs');
         $bdcs = $this->Bdcs->find()->where(['deleted' => 0])->order(['id' => 'ASC']);
@@ -39,27 +39,45 @@ class CashdesksController extends AppController
         $sort = $this->request->getQuery('sort') ?? "DESC";
         if ($_SESSION["Auth"]->role != 'root') {
             $nbitems_trashed = $this->Cashdesks->find()->where(['deleted' => 1, 'bdc_id' => $_SESSION["Auth"]->bdc_id])->all()->count();
-            $nbitems = $this->Cashdesks->find()->where(['deleted' => 0, 'bdc_id' => $_SESSION["Auth"]->bdc_id])->all()->count();
+            $nbitems_closed = $this->Cashdesks->find()->where(['closed' => 1, 'bdc_id' => $_SESSION["Auth"]->bdc_id])->all()->count();
+            $nbitems = $this->Cashdesks->find()->where(['deleted' => 0, 'closed' => 0, 'bdc_id' => $_SESSION["Auth"]->bdc_id])->all()->count();
             if ($trasharg == "trash:true") {
                 $this->set('trash_view', true);
                 $cashdesks = $this->Paginator->paginate($this->Cashdesks->find()->where(['deleted' => 1, 'bdc_id' => $_SESSION["Auth"]->bdc_id])->order([$order => $sort]));
             } else {
                 $this->set('trash_view', false);
-                $cashdesks = $this->Paginator->paginate($this->Cashdesks->find()->where(['deleted' => 0, 'bdc_id' => $_SESSION["Auth"]->bdc_id])->order([$order => $sort]));
+                $cashdesks = $this->Paginator->paginate($this->Cashdesks->find()->where(['deleted' => 0, 'closed' => 0, 'bdc_id' => $_SESSION["Auth"]->bdc_id])->order([$order => $sort]));
+            }
+            if ($closearg == "close:true") {
+                $this->set('close_view', true);
+                $cashdesks = $this->Paginator->paginate($this->Cashdesks->find()->where(['deleted' => 1, 'bdc_id' => $_SESSION["Auth"]->bdc_id])->order([$order => $sort]));
+            } else {
+                $this->set('close_view', false);
+                $cashdesks = $this->Paginator->paginate($this->Cashdesks->find()->where(['deleted' => 0, 'closed' => 0, 'bdc_id' => $_SESSION["Auth"]->bdc_id])->order([$order => $sort]));
             }
         } else {
             $nbitems_trashed = $this->Cashdesks->find()->where(['deleted' => 1])->all()->count();
-            $nbitems = $this->Cashdesks->find()->where(['deleted' => 0])->all()->count();
+            $nbitems_closed = $this->Cashdesks->find()->where(['closed' => 1])->all()->count();
+            $nbitems = $this->Cashdesks->find()->where(['deleted' => 0, 'closed' => 0])->all()->count();
             if ($trasharg == "trash:true") {
                 $this->set('trash_view', true);
                 $cashdesks = $this->Paginator->paginate($this->Cashdesks->find()->where(['deleted' => 1])->order([$order => $sort]));
             } else {
                 $this->set('trash_view', false);
-                $cashdesks = $this->Paginator->paginate($this->Cashdesks->find()->where(['deleted' => 0])->order([$order => $sort]));
+                $cashdesks = $this->Paginator->paginate($this->Cashdesks->find()->where(['deleted' => 0, 'closed' => 0])->order([$order => $sort]));
             }
+            if ($trasharg == "close:true") {
+                $this->set('close_view', true);
+                $cashdesks = $this->Paginator->paginate($this->Cashdesks->find()->where(['deleted' => 0, 'closed' => 1])->order([$order => $sort]));
+            } else {
+                $this->set('close_view', false);
+                $cashdesks = $this->Paginator->paginate($this->Cashdesks->find()->where(['deleted' => 0, 'closed' => 0])->order([$order => $sort]));
+            }
+
         }
         $this->set(compact('cashdesks'));
         $this->set('nbitems_trashed', $nbitems_trashed);
+        $this->set('nbitems_closed', $nbitems_closed);
         $this->set('nbitems', $nbitems);
         $this->set('role', $_SESSION["Auth"]->role);
         //$this->Flash->success(__('The adh has been saved.'));

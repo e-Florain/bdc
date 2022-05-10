@@ -22,9 +22,13 @@
         <div class="input-field col s6">
           <input name="adh_name" id="adh_name" required type="text" class="validate">
           <label for="adh_name">Nom d'adhérent</label>
-        </div>
+        </div><!--
         <div class="input-field col s1">
-          <a class="btn btn-floating suffix" onclick="searchAdhByName();"><i class="material-icons">search</i></a>
+          <a class="btn btn-floating suffix" onclick="searchAdhByName();"><!--<i class="material-icons">search</i></a>
+        </div>-->
+      </div>
+      <div class="row">
+        <div class="input-field col s6" id="statusadh">
         </div>
       </div>
       <div class="row">

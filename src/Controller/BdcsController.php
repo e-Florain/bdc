@@ -9,10 +9,6 @@ use Cake\Http\Client;
 
 class BdcsController extends AppController
 {
-    private $florapi = array(
-        "url" => "http://10.0.3.184",
-        "x-api-key" => "ITPeApnIUQK5trRjFJ2HLfM2e9VsrzPm5BL1FNbh4aVHCLfSnUGpUoKc7TFAJNVm"
-    );
     
     private $list_keys = array(
         "id" => "Id",
@@ -180,7 +176,8 @@ class BdcsController extends AppController
 
     public function syncBdcs() {
         $bdcs = $this->Bdcs->find()->where(['deleted' => 0])->all();
-        $adhpros = $this->getAdhpros();
+        $adhs = $this->loadModel('Adhesions');
+        $adhpros = $adhs->getBdcs();
         $datas = array();
         foreach ($adhpros as $adhpro) {
             $found = false;
@@ -203,20 +200,6 @@ class BdcsController extends AppController
         }
         $this->Flash->success(__('Synchronisation des bureaux'));
         return $this->redirect('/bdcs/index');
-    }
-
-    public function getAdhpros() {
-        $http = new Client();
-        $url = $this->florapi['url'].'/getAdhpros?account_cyclos=1';
-        $found = false;
-        $response = $http->get($url, [], [
-            'headers' => [
-                'x-api-key' => $this->florapi['x-api-key'],
-                'Content-Type' => 'application/json'
-                ]
-        ]);
-        $results = $response->getJson();
-        return $results;
     }
 }
 ?>

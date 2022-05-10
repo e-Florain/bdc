@@ -295,17 +295,8 @@ class TransactionsController extends AppController
 
     public function getAdhsById($id="") {
         //echo "test ".$id;
-        
-        $http = new Client();
-        $url = $this->florapi['url'].'/getAdhs';
-        $found = false;
-        $response = $http->get($url, [], [
-            'headers' => [
-                'x-api-key' => $this->florapi['x-api-key'],
-                'Content-Type' => 'application/json'
-                ]
-        ]);
-        $results = $response->getJson();
+        $adhs = $this->loadModel('Adhesions');
+        $results = $adhs->getAdhs();
         //var_dump($results);
         if ($id != "") {
             foreach ($results as $result) {
@@ -326,7 +317,13 @@ class TransactionsController extends AppController
     public function getAdhsByName() {
         $lastname = $this->request->getQuery('lastname');
         $firstname = $this->request->getQuery('fistname');
-        $http = new Client();
+        $params = array(
+            "firstname" => $firstname,
+            "lastname" => $lastname
+        );
+        $adhs = $this->loadModel('Adhesions');
+        $results = $adhs->getAdhs($params);
+        /*$http = new Client();
         $url = $this->florapi['url'].'/getAdhs?lastname='.$lastname.'&firstname='.$firstname;
         $found = false;
         $response = $http->get($url, [], [
@@ -335,11 +332,12 @@ class TransactionsController extends AppController
                 'Content-Type' => 'application/json'
                 ]
         ]);
-        $results = $response->getJson();
+        $results = $response->getJson();*/
         $arr = array();
         foreach ($results as $result) {
             //echo $result["lastname"]." ".$result["firstname"];
-            $arr[] = array($result["lastname"]." ".$result["firstname"] => $result["ref"]);
+            //$arr[] = array($result["lastname"]." ".$result["firstname"] => $result["ref"]);
+            $arr[$result["lastname"]." ".$result["firstname"]] = array($result["ref"], $result["membership_state"]);
         }
         $json = json_encode($arr);
         echo $json;

@@ -137,7 +137,7 @@ function searchAdhById() {
   });
 }*/
 
-$(document).ready(function(){
+/*$(document).ready(function(){
   $('#adh_name').autocomplete({
     data: {
       "Apple": null,
@@ -145,12 +145,13 @@ $(document).ready(function(){
       "Google": 'https://placehold.it/250x250'
     },
   });
-});
+});*/
 
 $( "#adh_name" ).change(function() {
   var name = $("#adh_name").val();
   console.log("change adh_name "+name);
-  let tag = name.match(/([A-Z]+)\s([A-Z]\w+)/);
+  //let tag = name.match(/([A-Z]+)\s([A-Z]\w+)/);
+  let tag = name.match(/^(.+)\s(.+)$/);
   var lastname=tag[1];
   var firstname=tag[2];
   url = "/Transactions/getAdhsByName?lastname="+lastname+"&firstname="+firstname;
@@ -159,9 +160,21 @@ $( "#adh_name" ).change(function() {
         const obj = JSON.parse(data);
         var arr = new Array();
         $.each(obj, function(k, v) {
-          console.log(Object.values(v)[0]);
+          //console.log(Object.values(v));
           $("#adh_id").val(Object.values(v)[0]);
+          $("#statusadh").show();
+          console.log(Object.values(v)[1]);
+          if (Object.values(v)[1] == "paid") {
+            $("#statusadh").html("Adhérent à jour de cotisation");
+          }
+          if (Object.values(v)[1] == "none") {
+            $("#statusadh").html("Adhérent non à jour de cotisation");
+          }
+          
         });
+      })
+      .fail(function( data ) {
+        $("#statusadh").html("Erreur");
     });
 });
 
@@ -175,7 +188,9 @@ $( "#adh_name" ).keypress(function() {
         const obj = JSON.parse(data);
         var arr = new Array();
         $.each(obj, function(k, v) {
-          arr[Object.keys(v)[0]] = null;
+          console.log(obj);
+          //arr[Object.keys(v)[0]] = null;
+          arr[k] = null;
         });
         $('#adh_name').autocomplete({
           data: arr,

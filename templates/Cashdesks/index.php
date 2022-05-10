@@ -11,6 +11,10 @@
     <?php if ($trash_view) { 
             echo "effacés";
             echo "(".$nbitems_trashed.")";
+        }
+        else if ($close_view) {
+            echo "fermés";
+            echo "(".$nbitems_closed.")";
         } else {
             echo "(".$nbitems.")";    
         }
@@ -25,6 +29,16 @@ if ($trash_view) {
 } else {
 ?>
     <a href="/cashdesks/index/trash:true">Corbeille (<?php echo $nbitems_trashed; ?>)</a>
+<?php
+}
+
+if ($close_view) {
+?>
+    <a href="/cashdesks/index">Caisses ouvertes (<?php echo $nbitems; ?>)</a>
+<?php
+} else {
+?>
+    <a href="/cashdesks/index/close:true">Caisses closes (<?php echo $nbitems_closed; ?>)</a>
 <?php
 }
 ?>
