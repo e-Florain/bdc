@@ -10,6 +10,9 @@ class UsersController extends AppController
     public function index()
     {
         $this->loadComponent('Paginator');
+        $this->loadModel('Bdcs');
+        $bdcs = $this->Bdcs->find()->where(['deleted' => 0])->order(['id' => 'ASC']);
+        $this->set('bdcs', $bdcs);
         $order = $this->request->getQuery('orderby') ?? "lastname";
         //$sort = isset($this->request->getQuery('sort')) ? $this->request->getQuery('sort') : "ASC";
         $sort = $this->request->getQuery('sort') ?? "ASC";
@@ -48,6 +51,7 @@ class UsersController extends AppController
                     $session = $this->request->getSession();
                     $session->write('User.name', $user->firstname." ".$user->lastname);
                     $session->write('User.id', $user->id);
+                    $session->write('User.role', $user->role);
                     if ($user->role == "root") {
                         $redirect = $this->request->getQuery('redirect', [
                             'controller' => 'Bdcs',
@@ -80,6 +84,9 @@ class UsersController extends AppController
     public function add()
     {
         $this->set('list_roles', $this->list_roles);
+        $this->loadModel('Bdcs');
+        $bdcs = $this->Bdcs->find()->where(['deleted' => 0])->order(['id' => 'ASC']);
+        $this->set('bdcs', $bdcs);
         $user = $this->Users->newEmptyEntity();
         if ($this->request->is('post')) {
             $user = $this->Users->patchEntity($user, $this->request->getData());
@@ -94,6 +101,9 @@ class UsersController extends AppController
 
     public function edit($id)
     {
+        $this->loadModel('Bdcs');
+        $bdcs = $this->Bdcs->find()->where(['deleted' => 0])->order(['id' => 'ASC']);
+        $this->set('bdcs', $bdcs);
         $user = $this->Users->get($id);
         $this->set('list_roles', $this->list_roles);
         $this->set(compact('user'));

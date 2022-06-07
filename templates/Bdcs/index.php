@@ -2,7 +2,7 @@
 
 <br>
 <a class="btn-floating btn-large waves-effect waves-light btn-pink" href="/bdcs/syncBdcs"><i class="material-icons">autorenew</i></a>
-<!--<a class="btn-floating btn-large waves-effect waves-light btn-pink" href="/bdcs/add"><i class="material-icons">add</i></a>-->
+<a class="btn-floating btn-large waves-effect waves-light btn-pink" href="/bdcs/add"><i class="material-icons">add</i></a>
 <!--<a class="btn-floating btn-large waves-effect waves-light btn-blue" href="/bdcs/importexport"><i class="material-icons">import_export</i></a>-->
 <h3>
     <div id='nbbdcs'>Bureaux de change 
@@ -38,12 +38,6 @@ if ($trash_view) {
 <div id="results">
 <table class="striped responsive-table">
     <tr>
-        <th>
-            <label>
-            <input type="checkbox" id="selectAll"/>
-            <span></span>
-            </label>
-        </th>
         <th><?= $this->Html->link("Id", [
             'controller' => 'bdcs',
             'action' => 'index',
@@ -87,12 +81,6 @@ if ($trash_view) {
 
     <?php foreach ($bdcs as $bdc): ?>
     <tr>
-        <td>
-            <label>
-            <input type="checkbox" id="<?php echo $bdc->id; ?>" name="<?php echo $bdc->id; ?>"/>
-            <span></span>
-            </label>
-        </td>
         <td>
             <?php echo $bdc->id; ?>
         </td>

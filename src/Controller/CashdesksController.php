@@ -28,8 +28,9 @@ class CashdesksController extends AppController
         }
     }
 
-    public function index($trasharg="trash:false", $closearg="close:false")
+    public function index($arg="trash:false")
     {
+        //echo "arg ".$arg;
         $this->loadModel('Bdcs');
         $bdcs = $this->Bdcs->find()->where(['deleted' => 0])->order(['id' => 'ASC']);
         $this->set('bdcs', $bdcs);
@@ -41,14 +42,14 @@ class CashdesksController extends AppController
             $nbitems_trashed = $this->Cashdesks->find()->where(['deleted' => 1, 'bdc_id' => $_SESSION["Auth"]->bdc_id])->all()->count();
             $nbitems_closed = $this->Cashdesks->find()->where(['closed' => 1, 'bdc_id' => $_SESSION["Auth"]->bdc_id])->all()->count();
             $nbitems = $this->Cashdesks->find()->where(['deleted' => 0, 'closed' => 0, 'bdc_id' => $_SESSION["Auth"]->bdc_id])->all()->count();
-            if ($trasharg == "trash:true") {
+            if ($arg == "trash:true") {
                 $this->set('trash_view', true);
                 $cashdesks = $this->Paginator->paginate($this->Cashdesks->find()->where(['deleted' => 1, 'bdc_id' => $_SESSION["Auth"]->bdc_id])->order([$order => $sort]));
             } else {
                 $this->set('trash_view', false);
                 $cashdesks = $this->Paginator->paginate($this->Cashdesks->find()->where(['deleted' => 0, 'closed' => 0, 'bdc_id' => $_SESSION["Auth"]->bdc_id])->order([$order => $sort]));
             }
-            if ($closearg == "close:true") {
+            if ($arg == "close:true") {
                 $this->set('close_view', true);
                 $cashdesks = $this->Paginator->paginate($this->Cashdesks->find()->where(['deleted' => 1, 'bdc_id' => $_SESSION["Auth"]->bdc_id])->order([$order => $sort]));
             } else {
@@ -59,17 +60,16 @@ class CashdesksController extends AppController
             $nbitems_trashed = $this->Cashdesks->find()->where(['deleted' => 1])->all()->count();
             $nbitems_closed = $this->Cashdesks->find()->where(['closed' => 1])->all()->count();
             $nbitems = $this->Cashdesks->find()->where(['deleted' => 0, 'closed' => 0])->all()->count();
-            if ($trasharg == "trash:true") {
+            if ($arg == "trash:true") {
                 $this->set('trash_view', true);
+                $this->set('close_view', false);
                 $cashdesks = $this->Paginator->paginate($this->Cashdesks->find()->where(['deleted' => 1])->order([$order => $sort]));
-            } else {
+            } elseif ($arg == "close:true") {
                 $this->set('trash_view', false);
-                $cashdesks = $this->Paginator->paginate($this->Cashdesks->find()->where(['deleted' => 0, 'closed' => 0])->order([$order => $sort]));
-            }
-            if ($trasharg == "close:true") {
                 $this->set('close_view', true);
                 $cashdesks = $this->Paginator->paginate($this->Cashdesks->find()->where(['deleted' => 0, 'closed' => 1])->order([$order => $sort]));
             } else {
+                $this->set('trash_view', false);
                 $this->set('close_view', false);
                 $cashdesks = $this->Paginator->paginate($this->Cashdesks->find()->where(['deleted' => 0, 'closed' => 0])->order([$order => $sort]));
             }
@@ -88,6 +88,13 @@ class CashdesksController extends AppController
     {
         if ($this->request->is('post')) {            
             $data = $this->request->getData();
+            $cashdesks = $this->Cashdesks->find()->where(['closed' => 0, 'deleted' => 0])->all();
+            foreach ($cashdesks as $cashdesk) {
+                if ($data['bdc_id'] == $cashdesk['bdc_id']) {
+                    $this->Flash->error(__('Erreur : Impossible d\'ouvrir La caisse car une caisse est déjà ouverte sur ce bureau de change.'));
+                    return $this->redirect('/cashdesks/index');
+                }
+            }
             $data["date"] = $data["date"]."00:00:00";
             $data['bdc_id'] = $_SESSION['Auth']->bdc_id;
             $cashdesk = $this->Cashdesks->newEntity($data);
@@ -111,8 +118,15 @@ class CashdesksController extends AppController
         $this->loadModel('Bdcs');
         $bdcs = $this->Bdcs->find()->where(['deleted' => 0])->order(['id' => 'ASC']);
         $this->set('bdcs', $bdcs);
-        if ($this->request->is('post')) {            
+        if ($this->request->is('post')) {
             $data = $this->request->getData();
+            $cashdesks = $this->Cashdesks->find()->where(['closed' => 0, 'deleted' => 0])->all();
+            foreach ($cashdesks as $cashdesk) {
+                if ($data['bdc_id'] == $cashdesk['bdc_id']) {
+                    $this->Flash->error(__('Erreur : Impossible d\'ouvrir La caisse car une caisse est déjà ouverte sur ce bureau de change.'));
+                    return $this->redirect('/cashdesks/index');
+                }
+            }       
             $data["date"] = $data["date"]."00:00:00";
             $cashdesk = $this->Cashdesks->newEntity($data);
             //var_dump($cashdesk);
@@ -178,6 +192,38 @@ class CashdesksController extends AppController
                 $this->Flash->success(__('La caisse a été restauré.'));
                 return $this->redirect('/cashdesks/index');
             }
+        }
+    }
+
+    public function close($id) {
+        $cashdesk = $this->Cashdesks->get($id);
+        $cashdesk['closed'] = 1;
+        if ($this->Cashdesks->save($cashdesk)) {
+            $this->Flash->success(__('La caisse a été clôturée.'));
+            return $this->redirect('/cashdesks/index');
+        } else {
+            $this->Flash->error(__('Erreur : Impossible d\'clôturer La caisse.'));
+            return $this->redirect('/cashdesks/index');
+        }
+    }
+
+    public function unclose($id) {
+        $mycashdesk = $this->Cashdesks->get($id);
+        $cashdesks = $this->Cashdesks->find()->where(['closed' => 0, 'deleted' => 0])->all();
+        foreach ($cashdesks as $cashdesk) {
+            if ($mycashdesk['bdc_id'] == $cashdesk['bdc_id']) {
+                $this->Flash->error(__('Erreur : Impossible de rouvrir La caisse car une caisse est déjà ouverte sur ce bureau de change.'));
+                return $this->redirect('/cashdesks/index');
+            }
+        }
+        //echo $mycashdesk['bdc_id'];
+        $mycashdesk['closed'] = 0;
+        if ($this->Cashdesks->save($mycashdesk)) {
+            $this->Flash->success(__('La caisse a été rouverte.'));
+            return $this->redirect('/cashdesks/index');
+        } else {
+            $this->Flash->error(__('Erreur : Impossible de rouvrir La caisse.'));
+            return $this->redirect('/cashdesks/index');
         }
     }
 

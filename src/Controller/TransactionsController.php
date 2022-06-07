@@ -10,11 +10,6 @@ use Cake\Http\Client;
 class TransactionsController extends AppController
 {
 
-    private $florapi = array(
-        "url" => "http://10.0.3.184",
-        "x-api-key" => "ITPeApnIUQK5trRjFJ2HLfM2e9VsrzPm5BL1FNbh4aVHCLfSnUGpUoKc7TFAJNVm"
-    );
-
     private $list_keys = array(
         "date" => "Date",
         "adh_id" => "Numéro d'adhérent",
@@ -110,16 +105,24 @@ class TransactionsController extends AppController
 
     public function add()
     {
+        $this->loadModel('Cashdesks');
         $cashdesk_id = $this->request->getQuery('cashdesk_id');
+        $cashdesk = $this->Cashdesks->find()->where(['deleted' => 0, 'id' => $cashdesk_id])->first();
+        $this->set('date', $cashdesk->date->format('Y-m-d H:i:s'));
         $this->set('cashdesk_id', $cashdesk_id);
         $this->set('list_payment_type', $this->list_payment_type);
+        if ($cashdesk->closed) {
+            $this->Flash->success(__('Impossible : la caisse est fermée'));
+            return $this->redirect(['controller' => 'cashdesks', 'action' => 'index']);
+        }
         if ($this->request->is('post')) {            
             $data = $this->request->getData();
-            $data["date"] = $data["date"]."00:00:00";
+            //$data["date"] = $data["date"]."00:00:00";
+            $data["adh_name"] = $data["adh_lastname"]." ".$data["adh_firstname"];
             $transaction = $this->Transactions->newEntity($data);
             if ($this->Transactions->save($transaction)) {
                 $this->Flash->success(__('La transaction a été ajoutée.'));
-                return $this->redirect(['action' => 'add']);
+                return $this->redirect(['action' => 'add?cashdesk_id='.$cashdesk_id]);
             } else {
                 $errors = $transaction->getErrors();
                 if (isset($errors["adh"])) {
@@ -164,7 +167,7 @@ class TransactionsController extends AppController
             $data = $this->request->getData();
             $transaction = $this->Transactions->patchEntity($transaction, $data);
             if ($this->Transactions->save($transaction)) {
-                $this->Flash->success(__('Le transaction a été modifié.'));
+                $this->Flash->success(__('La transaction a été modifiée.'));
                 return $this->redirect(['action' => 'index']);
             } else {
                 $this->Flash->error(__('Erreur : Impossible de modifier le transaction.'));
@@ -177,12 +180,12 @@ class TransactionsController extends AppController
         $transaction = $this->Transactions->get($id);
         if ($transaction['deleted'] == 1) {
             $result = $this->Transactions->delete($transaction);
-            $this->Flash->success(__('La transaction a été effacé.'));
+            $this->Flash->success(__('La transaction a été effacée.'));
             return $this->redirect('/Transactions/index/trash:true?cashdesk_id='.$transaction->cashdesk_id);
         } else {
             $transaction['deleted'] = 1;
             if ($this->Transactions->save($transaction)) {
-                $this->Flash->success(__('La transaction a été effacé.'));
+                $this->Flash->success(__('La transaction a été effacée.'));
                 return $this->redirect('/Transactions/index?cashdesk_id='.$transaction->cashdesk_id);
             } else {
                 $this->Flash->error(__('Erreur : Impossible d\'effacer la transaction.'));
@@ -197,7 +200,7 @@ class TransactionsController extends AppController
         if ($transaction['deleted'] == 1) {
             $transaction['deleted'] = 0;
             if ($this->Transactions->save($transaction)) {
-                $this->Flash->success(__('La transaction a été restauré.'));
+                $this->Flash->success(__('La transaction a été restaurée.'));
                 return $this->redirect('/Transactions/index?cashdesk_id='.$transaction->cashdesk_id);
             }
         }
@@ -294,50 +297,38 @@ class TransactionsController extends AppController
     }
 
     public function getAdhsById($id="") {
-        //echo "test ".$id;
         $adhs = $this->loadModel('Adhesions');
         $results = $adhs->getAdhs();
-        //var_dump($results);
+        $res = array();
         if ($id != "") {
             foreach ($results as $result) {
                 if ($result["ref"] == $id) {
                     $found = true;
-                    echo $result["lastname"]." ".$result["firstname"];
+                    $res["lastname"]=$result["lastname"];
+                    $res["firstname"]=$result["firstname"];
                 }
             }
-            if ($found == false) {
-                //echo "Adhérent non trouvé";
-                echo "0";
-            }
-        } else {
-            //return $results;
         }
+        $json = json_encode($res);
+        echo $json;
     }
 
     public function getAdhsByName() {
         $lastname = $this->request->getQuery('lastname');
-        $firstname = $this->request->getQuery('fistname');
+        $firstname = $this->request->getQuery('firstname');
         $params = array(
             "firstname" => $firstname,
             "lastname" => $lastname
         );
         $adhs = $this->loadModel('Adhesions');
         $results = $adhs->getAdhs($params);
-        /*$http = new Client();
-        $url = $this->florapi['url'].'/getAdhs?lastname='.$lastname.'&firstname='.$firstname;
-        $found = false;
-        $response = $http->get($url, [], [
-            'headers' => [
-                'x-api-key' => $this->florapi['x-api-key'],
-                'Content-Type' => 'application/json'
-                ]
-        ]);
-        $results = $response->getJson();*/
         $arr = array();
         foreach ($results as $result) {
-            //echo $result["lastname"]." ".$result["firstname"];
-            //$arr[] = array($result["lastname"]." ".$result["firstname"] => $result["ref"]);
-            $arr[$result["lastname"]." ".$result["firstname"]] = array($result["ref"], $result["membership_state"]);
+            $arr[$result["lastname"]] = array(
+                "lastname" => $result["lastname"],
+                "firstname" => $result["firstname"],
+                "ref" => $result["ref"], 
+                "state" => $result["membership_state"]);
         }
         $json = json_encode($arr);
         echo $json;

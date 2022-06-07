@@ -88,8 +88,6 @@ class BdcsController extends AppController
 
     public function add()
     {
-        $adhpros = $this->getAdhpros();
-        $this->set(compact('adhpros'));
         if ($this->request->is('post')) {            
             $bdc = $this->Bdcs->newEmptyEntity();
             $data = $this->request->getData();

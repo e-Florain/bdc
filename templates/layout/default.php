@@ -54,7 +54,7 @@ $cakeDescription = 'Florain - Portail';
 
   <nav class="nav-extended">
     <div class="nav-wrapper">
-      <img src="/img/logo-monnaie.svg" height="64"><a href="#" class="brand-logo">Florain - La monnaie qui crée du lien</a>
+      <img src="/img/logo-monnaie.svg" height="64"><a href="#" class="brand-logo">Florain</a>
       <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
         <li><a href="/users">Utilisateurs</a></li>
@@ -71,12 +71,18 @@ $cakeDescription = 'Florain - Portail';
     </div>
     <div class="nav-content">
       <ul class="tabs tabs-transparent">
+        <?php
+        if ($session->read('User.role') == "root") {
+        ?>
         <li class="tab"><a 
         <?php  if ($this->request->getParam('controller') == "Bdcs" ) {
             echo 'class="active"';
         }
         ?>
         href="/bdcs/index">Bureaux de change</a></li>
+        <?php
+        }
+        ?>
         <li class="tab"><a  
         <?php  if ($this->request->getParam('controller') == "Cashdesks" ) {
             echo 'class="active"';

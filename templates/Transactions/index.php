@@ -1,7 +1,13 @@
 <!-- File: templates/Transactions/index.php -->
 <br>
+<?php
+if (!$cashdesk->closed) {
+?>
 <a class="btn-floating btn-large waves-effect waves-light btn-pink" href="/Transactions/add?cashdesk_id=<?php echo $cashdesk_id; ?>"><i class="material-icons">add</i></a>
 <a class="btn-floating btn-large waves-effect waves-light btn-blue" href="/Transactions/importexport?cashdesk_id=<?php echo $cashdesk_id; ?>"><i class="material-icons">import_export</i></a>
+<?php
+}
+?>
 <h3>
     <div id='nbTransactions'>Transactions de la caisse de <?php echo $bdc_name; ?> du <?php echo $cashdesk->date->nice('Europe/Paris', 'fr-FR'); ?>
     <?php if ($trash_view) { 
@@ -11,6 +17,7 @@
             echo "(".$nbitems.")";    
         }
     ?>
+    <br> Montant initial : <?php echo $cashdesk->received_amount; ?> Fl / Solde : <?php echo $cashdesk->balance; ?> Fl / Solde (eur) : <?php echo $cashdesk->balance_euros; ?> eur
     </div>
 </h3>
 <?php
@@ -65,11 +72,16 @@ if ($trash_view) {
             <?= $transaction->payment_type ?>
         </td>
         <td class="icons">
+        <?php
+        if (!$cashdesk->closed) {
+        ?>
             <!--<a <?php echo 'href="/Transactions/edit/'.$transaction->id.'"'; ?> class="btn-floating btn-large waves-effect waves-light btn-green"><i class="material-icons">edit</i></a>-->
             <a <?php echo 'href="/Transactions/delete/'.$transaction->id.'"'; ?> class="btn-floating btn-large waves-effect waves-light btn-orange"><i class="material-icons">delete</i></a>
             <?php if ($trash_view): ?>
             <a <?php echo 'href="/Transactions/restore/'.$transaction->id.'"'; ?> class="btn-floating btn-large waves-effect waves-light btn-orange"><i class="material-icons">restore_from_trash</i></a>
-            <?php endif; ?>
+            <?php endif; 
+        }
+        ?>
         </td>
 
     </tr>

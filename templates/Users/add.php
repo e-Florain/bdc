@@ -44,6 +44,18 @@
             <label>Rôle</label>
         </div>
       </div>
+      <div class="row">
+        <div class="input-field col s6">
+            <select name="bdc_id" >
+                <option value="" disabled selected>Choisir</option>
+                <?php foreach ($bdcs as $bdc) {
+                  echo '<option value="'.$bdc->id.'" >'.$bdc->name.'</option>';
+                }
+                ?>
+            </select>
+            <label>Bureau de change</label>
+        </div>
+      </div>
     <button class="btn waves-effect waves-light" type="submit" name="action">Ajouter
     <i class="material-icons right">send</i>
     </button>

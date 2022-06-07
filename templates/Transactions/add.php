@@ -1,7 +1,8 @@
 <br>
+<a class="btn-floating btn-large waves-effect waves-light btn-pink" onclick = "history.back()"><i class="material-icons">arrow_back</i></a>
 <h3>Ajouter une transaction</h3>
   <div class="row">
-    <?php echo $this->Form->create(); ?>
+    <?php echo $this->Form->create(null, ['autocomplete' => 'off', 'onSubmit' => 'submitFunction(event);']); ?>
       <div class="row">
         <input type="hidden" name="cashdesk_id" id="cashdesk_id" value="<?php echo $cashdesk_id; ?>">
         <div class="input-field col s2">
@@ -14,19 +15,37 @@
       </div>
       <div class="row">  
         <div class="input-field col s3">
-          <input name="date" type="text" id="date_adh" required class="datepicker">
-          <label for="date">Date de la tranaction</label>
+          <input name="date" type="text" id="date" value="<?php echo $date; ?>" required class="datepicker validate">
+          <label for="date">Date de la transaction</label>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s6">
-          <input name="adh_name" id="adh_name" required type="text" class="validate">
-          <label for="adh_name">Nom d'adhérent</label>
-        </div><!--
+          <input name="adh_lastname" id="adh_lastname" required type="text" class="validate">
+          <label for="adh_lastname">Nom d'adhérent</label>
+        </div>
         <div class="input-field col s1">
-          <a class="btn btn-floating suffix" onclick="searchAdhByName();"><!--<i class="material-icons">search</i></a>
-        </div>-->
+          <a class="btn btn-floating suffix" onclick="searchAdhByName();"><i class="material-icons">search</i></a>
+        </div>
       </div>
+      <div class="row">
+        <div class="input-field col s6">
+          <input name="adh_firstname" id="adh_firstname" required type="text" class="validate">
+          <label for="adh_firstname">Prénom d'adhérent</label>
+          <!--<select name="adh_firstname" id="adh_firstname">
+          </select>-->
+          <label>Prénom d'adhérent</label>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="input-field col s6">
+          <select name="adh_fullname" id="adh_fullname">
+          </select>
+          <label>Nom</label>
+        </div>
+      </div>
+      
       <div class="row">
         <div class="input-field col s6" id="statusadh">
         </div>

@@ -42,7 +42,7 @@ $cakeDescription = 'Florain - Portail';
 <body>
   <nav class="nav-extended">
     <div class="nav-wrapper">
-      <img src="/img/logo-monnaie.svg" height="64"><a href="#" class="brand-logo">Florain - La monnaie qui crée du lien</a>
+      <img src="/img/logo-monnaie.svg" height="64"><a href="#" class="brand-logo">Florain</a>
       <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
     </div>
     

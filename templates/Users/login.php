@@ -8,13 +8,13 @@
 
     <!--<form class="col s4" methode="post" action="/users/login">-->
       <div class="row">
-        <div class="input-field col s4">
+        <div class="input-field col s6">
           <input name="email" id="email" type="text" class="required validate">
           <label for="email">Email</label>
         </div>
       </div>
       <div class="row">
-        <div class="input-field col s4">
+        <div class="input-field col s6">
           <input name="password" id="password" type="password" class="required validate">
           <label for="password">Password</label>
         </div>

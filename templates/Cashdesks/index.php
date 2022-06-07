@@ -9,11 +9,11 @@
 <h3>
     <div id='nbcashdesks'>Caisses
     <?php if ($trash_view) { 
-            echo "effacés";
+            echo "effacées";
             echo "(".$nbitems_trashed.")";
         }
         else if ($close_view) {
-            echo "fermés";
+            echo "fermées";
             echo "(".$nbitems_closed.")";
         } else {
             echo "(".$nbitems.")";    
@@ -38,7 +38,7 @@ if ($close_view) {
 <?php
 } else {
 ?>
-    <a href="/cashdesks/index/close:true">Caisses closes (<?php echo $nbitems_closed; ?>)</a>
+    <a href="/cashdesks/index/close:true">Caisses fermées (<?php echo $nbitems_closed; ?>)</a>
 <?php
 }
 ?>
@@ -128,11 +128,17 @@ if ($close_view) {
             <?= $cashdesk->balance_euros ?>
         </td>
         <td class="icons"> 
-            <a <?php echo 'href="/cashdesks/edit/'.$cashdesk->id.'"'; ?> class="btn-floating btn-large waves-effect waves-light btn-green"><i class="material-icons">edit</i></a>
-            <a <?php echo 'href="/transactions/index?cashdesk_id='.$cashdesk->id.'"'; ?> class="btn-floating btn-large waves-effect waves-light btn-green"><i class="material-icons">attach_money</i></a>
-            <a <?php echo 'href="/cashdesks/delete/'.$cashdesk->id.'"'; ?> class="btn-floating btn-large waves-effect waves-light btn-orange"><i class="material-icons">delete</i></a>
+            <a <?php echo 'href="/cashdesks/edit/'.$cashdesk->id.'"'; ?> data-position="top" data-tooltip="Editer la caisse" class="btn-floating btn-large waves-effect waves-light btn-green tooltipped"><i class="material-icons">edit</i></a>
+            <a <?php echo 'href="/transactions/index?cashdesk_id='.$cashdesk->id.'"'; ?> data-position="top" data-tooltip="Voir la caisse"  class="btn-floating btn-large waves-effect waves-light btn-green tooltipped"><i class="material-icons">attach_money</i></a>
+            <a <?php echo 'href="/cashdesks/delete/'.$cashdesk->id.'"'; ?> data-position="top" data-tooltip="Effacer la caisse"  class="btn-floating btn-large waves-effect waves-light btn-orange tooltipped"><i class="material-icons">delete</i></a>
+            <?php if (!$close_view): ?>
+            <a <?php echo 'href="/cashdesks/close/'.$cashdesk->id.'"'; ?> data-position="top" data-tooltip="Fermer la caisse" class="btn-floating btn-large waves-effect waves-light btn-green tooltipped"><i class="material-icons">close</i></a>
+            <?php endif; ?>
+            <?php if ($close_view): ?>
+            <a <?php echo 'href="/cashdesks/unclose/'.$cashdesk->id.'"'; ?> data-position="top" data-tooltip="Rouvrir la caisse" class="btn-floating btn-large waves-effect waves-light btn-green tooltipped"><i class="material-icons">open_in_new</i></a>
+            <?php endif; ?>
             <?php if ($trash_view): ?>
-            <a <?php echo 'href="/cashdesks/restore/'.$cashdesk->id.'"'; ?> class="btn-floating btn-large waves-effect waves-light btn-orange"><i class="material-icons">restore_from_trash</i></a>
+            <a <?php echo 'href="/cashdesks/restore/'.$cashdesk->id.'"'; ?> data-position="top" data-tooltip="Restaurer la caisse" class="btn-floating btn-large waves-effect waves-light btn-orange tooltipped"><i class="material-icons">restore_from_trash</i></a>
             <?php endif; ?>
         </td>
     </tr>

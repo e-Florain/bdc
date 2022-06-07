@@ -21,6 +21,10 @@ class CashdesksTable extends Table
             'errorField' => 'status',
             'message' => 'L\'id doit être unique'
         ]);
+        /*$rules->add($rules->date(['date']), [
+            'errorField' => 'status',
+            'message' => 'La date n\'a pas un bon format'
+        ]);*/
         return $rules;
     }
 }

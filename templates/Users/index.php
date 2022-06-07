@@ -22,6 +22,11 @@
             '?' => ['orderby' => "email"]
         ]); ?>
         </th>
+        <th><?= $this->Html->link("Bdc", [
+            'controller' => 'users',
+            'action' => 'index',
+            '?' => ['orderby' => "bdc_id"]
+        ]); ?>
         <th><?= $this->Html->link("Role", [
             'controller' => 'users',
             'action' => 'index',
@@ -33,7 +38,9 @@
 
     <!-- Here is where we iterate through our $articles query object, printing out article info -->
 
-    <?php foreach ($users as $user): ?>
+    <?php 
+    //var_dump($bdcs);
+    foreach ($users as $user): ?>
     <tr>
         <td>
             <?= $user->lastname ?>
@@ -43,6 +50,20 @@
         </td>
         <td>
             <?= $user->email ?>
+        </td>
+        <td>
+            <?php
+            $found = false;
+            foreach ($bdcs as $bdc) {
+                if ($user->bdc_id == $bdc->id) {
+                    echo $bdc->name;
+                    $found = true;
+                }
+            }
+            if (!$found) {
+                echo "TOUS";
+            }
+            ?>
         </td>
         <td>
             <?= $user->role ?>

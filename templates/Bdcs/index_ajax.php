@@ -1,12 +1,6 @@
 Adhérents pros;<?php echo $trash_view.";".$nbitems; ?>;
 <table class="striped responsive-table">
     <tr>
-        <th>
-            <label>
-            <input type="checkbox" id="selectAll"/>
-            <span></span>
-            </label>
-        </th>
         <th><?= $this->Html->link("Id", [
             'controller' => 'bdcs',
             'action' => 'index',
@@ -51,12 +45,6 @@ Adhérents pros;<?php echo $trash_view.";".$nbitems; ?>;
     <?php foreach ($bdcs as $bdc): ?>
     <tr>
         <td>
-            <label>
-            <input type="checkbox" id="<?php echo $bdc->id; ?>" name="<?php echo $bdc->id; ?>"/>
-            <span></span>
-            </label>
-        </td>
-        <td>
             <?php echo $bdc->id; ?>
         </td>
         <td>
@@ -75,7 +63,6 @@ Adhérents pros;<?php echo $trash_view.";".$nbitems; ?>;
             <?= $bdc->city ?>
         </td>
         <td class="icons">
-            <a <?php echo 'href="/bdcs/edit/'.$bdc->id.'"'; ?> class="btn-floating btn-large waves-effect waves-light btn-green"><i class="material-icons">edit</i></a>
             <a <?php echo 'href="/bdcs/delete/'.$bdc->id.'"'; ?> class="btn-floating btn-large waves-effect waves-light btn-orange"><i class="material-icons">delete</i></a>
         </td>
 
