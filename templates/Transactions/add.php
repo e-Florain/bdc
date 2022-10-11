@@ -2,7 +2,7 @@
 <a class="btn-floating btn-large waves-effect waves-light btn-pink" onclick = "history.back()"><i class="material-icons">arrow_back</i></a>
 <h3>Ajouter une transaction</h3>
   <div class="row">
-    <?php echo $this->Form->create(null, ['autocomplete' => 'off', 'onSubmit' => 'submitFunction(event);']); ?>
+    <?php echo $this->Form->create(null, ['autocomplete' => 'off', 'onSubmit' => 'return testFormAdd();']); ?>
       <div class="row">
         <input type="hidden" name="cashdesk_id" id="cashdesk_id" value="<?php echo $cashdesk_id; ?>">
         <div class="input-field col s2">

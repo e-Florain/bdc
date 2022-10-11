@@ -117,6 +117,9 @@ class TransactionsController extends AppController
         }
         if ($this->request->is('post')) {            
             $data = $this->request->getData();
+            if (preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$data["date"])) {
+                $data["date"] = $data["date"]."00:00:00";
+            }
             //$data["date"] = $data["date"]."00:00:00";
             $data["adh_name"] = $data["adh_lastname"]." ".$data["adh_firstname"];
             $transaction = $this->Transactions->newEntity($data);
@@ -306,6 +309,8 @@ class TransactionsController extends AppController
                     $found = true;
                     $res["lastname"]=$result["lastname"];
                     $res["firstname"]=$result["firstname"];
+                    $res["ref"]=$result["ref"];
+                    $res["state"]=$result["membership_state"];
                 }
             }
         }

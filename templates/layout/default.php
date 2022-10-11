@@ -89,6 +89,54 @@ $cakeDescription = 'Florain - Portail';
         }
         ?>
         href="/cashdesks/index">Caisses</a></li>
+        <?php
+        if ($session->read('User.role') == "root") {
+        ?>
+        <li class="tab"><a 
+        <?php  if ($this->request->getParam('controller') == "Payments" ) {
+            echo 'class="active"';
+        }
+        ?>
+        href="/payments/index">Mollie - Payments</a></li>
+        <?php
+        }
+        ?>
+        <?php
+        if ($session->read('User.role') == "root") {
+        ?>
+        <li class="tab"><a 
+        <?php  if ($this->request->getParam('controller') == "Subscriptions" ) {
+            echo 'class="active"';
+        }
+        ?>
+        href="/subscriptions/index">Mollie - Prélèvements</a></li>
+        <?php
+        }
+        ?>
+        <?php
+        if ($session->read('User.role') == "root") {
+        ?>
+        <li class="tab"><a 
+        <?php  if ($this->request->getParam('controller') == "Payments" ) {
+            echo 'class="active"';
+        }
+        ?>
+        href="/payments/onepercent">1%</a></li>
+        <?php
+        }
+        ?>
+        <?php
+        if ($session->read('User.role') == "root") {
+        ?>
+        <li class="tab"><a 
+        <?php  if ($this->request->getParam('controller') == "Settlements" ) {
+            echo 'class="active"';
+        }
+        ?>
+        href="/settlements/index">Mollie - Settlements</a></li>
+        <?php
+        }
+        ?>
       </ul>
     </div>
   </nav>

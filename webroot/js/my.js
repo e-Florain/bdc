@@ -105,13 +105,23 @@ function searchAdhById() {
         $("#btn_add").prop('disabled', false);
         $("#adh_id").prop('class', 'valid');
         $("#adh_lastname").val(obj['lastname']);
-        $('#adh_firstname').append($('<option>', {
+        $("#adh_firstname").val(obj['firstname']);
+        var strname = obj['ref']+" / "+obj['lastname']+" / "+obj['firstname'];
+          $('#adh_fullname').append($('<option>', {
+            value: strname,
+            text: strname,
+            selected: "selected"
+          }));
+        $('#adh_fullname').change();
+        var subcatSelectElem = document.querySelectorAll('#adh_fullname');
+        var subcatSelectInstance = M.FormSelect.init(subcatSelectElem, {});
+        /*$('#adh_firstname').append($('<option>', {
           value: obj['firstname'],
           text: obj['firstname'],
         }));
         $("#adh_firstname").filter(function() {
           return $(this).text() == obj['firstname'];
-        }).prop('selected', true);
+        }).prop('selected', true);*/
         //$('#adh_firstname option[value="'++'"]').prop('selected', 'selected');
       }
       M.updateTextFields();
@@ -234,8 +244,12 @@ $("#date").on("change",function(e){
 
 function testFormAdd() {
   console.log("testFormAdd");
-  console.log(element.classList.contains('invalid'));
-  return true;
+  var myVar = $(".container").find('.invalid');
+  if (myVar.length > 0) {
+    return false;
+  } else {
+    return true;
+  }
 }
 
 function setAdhStatus(lastname, firstname) {
@@ -247,8 +261,7 @@ function setAdhStatus(lastname, firstname) {
           const obj = JSON.parse(data);
           var arr = new Array();
           $.each(obj, function(k, v) {
-            //console.log(Object.values(v));
-            $("#adh_id").val(Object.values(v)[1]);
+            $("#adh_id").val(Object.values(v)[2]);
             $("#statusadh").show();
             if (Object.values(v)[3] == "paid") {
               $("#statusadh").html("Adhérent à jour de cotisation");
@@ -266,7 +279,7 @@ function setAdhStatus(lastname, firstname) {
     });
 }
 
-function setAdhStatus(id) {
+/*function setAdhStatus(id) {
   console.log("setAdhStatus "+id);
   url = "/Transactions/getAdhsById/"+id;
     $.get(url)
@@ -292,7 +305,7 @@ function setAdhStatus(id) {
       .fail(function( data ) {
         $("#statusadh").html("Erreur");
     });
-}
+}*/
 
 $( "#adh_fullname" ).change(function() {
   console.log("adh fullname change");
@@ -305,15 +318,12 @@ $( "#adh_fullname" ).change(function() {
   $("#adh_firstname").prop('class', 'valid');
   $("#adh_lastname").val(match[2]);
   $("#adh_lastname").prop('class', 'valid');
+  console.log(match[1]);
   $("#adh_id").val(match[1]);
   $("#adh_id").prop('class', 'valid');
   setAdhStatus(match[2], match[3]);
 });
 
-function submitFunction(event){
-	event.preventDefault();
-}
-$("#form_id").submit(submitFunction);
 /*
 $( "#adh_lastname" ).change(function() {
   var lastname = $("#adh_lastname").val();
@@ -363,3 +373,4 @@ $( "#adh_lastname" ).keypress(function() {
   }
 });
 */
+
