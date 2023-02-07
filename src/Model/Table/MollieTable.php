@@ -43,7 +43,7 @@ class MollieTable extends Table
     public function get_customers()
     {
         $http = new Client();
-        $url = $this->mollie['url'].'/customers';
+        $url = $this->mollie['url'].'/customers?limit=250';
         $found = false;
         $response = $http->get($url, [], [
             'headers' => [
@@ -60,7 +60,7 @@ class MollieTable extends Table
     public function get_customer($email)
     {
         $http = new Client();
-        $url = $this->mollie['url'].'/customers';
+        $url = $this->mollie['url'].'/customers?limit=250';
         $found = false;
         $response = $http->get($url, [], [
             'headers' => [
@@ -95,6 +95,22 @@ class MollieTable extends Table
         //$results = $response->getJson();
         $infos = $response->getJson();
         return $infos['_embedded']['mandates'];
+    }
+
+    public function get_mandate($customer, $mandate)
+    {
+        $http = new Client();
+        $url = $this->mollie['url']."/customers/".$customer."/mandates/".$mandate;
+        $found = false;
+        $response = $http->get($url, [], [
+            'headers' => [
+                'Authorization' => 'Bearer '.$this->mollie['key'],
+                'Content-Type' => 'application/json'
+                ]
+        ]);
+        //$results = $response->getJson();
+        $infos = $response->getJson();
+        return $infos;
     }
 
     public function get_all_subscriptions($from="")
@@ -185,7 +201,49 @@ class MollieTable extends Table
         return $listpaymentsbyassos;
     }
 
-    public function create_subscription_monthly($amountvalue, $customer, $mandate, $description, $startdate)
+    public function create_customer($email, $name)
+    {
+        $http = new Client();
+        $url = $this->mollie['url']."/customers";
+        $datas = array(
+            "email" => $email,
+            "name" => $name
+        );
+        $json = json_encode($datas);
+        $response = $http->post($url, $json, [
+            'headers' => [
+                'Authorization' => 'Bearer '.$this->mollie['key'],
+                'Content-Type' => 'application/json'
+                ]
+        ]);
+        $infos = $response->getJson();
+        return $infos;
+    }
+
+    public function create_mandate($customer, $iban, $consumerName, $email)
+    {
+        $http = new Client();
+        $url = $this->mollie['url']."/customers/".$customer."/mandates";
+        $datas = array(
+            "method" => "directdebit",
+            "consumerName" => $consumerName,
+            "consumerAccount" => $iban,
+            "consumerEmail" => $email
+    
+        );
+        $json = json_encode($datas);
+        $response = $http->post($url, $json, [
+            'headers' => [
+                'Authorization' => 'Bearer '.$this->mollie['key'],
+                'Content-Type' => 'application/json'
+                ]
+        ]);
+        $infos = $response->getJson();
+        return $infos;
+    }
+
+
+    public function create_subscription_monthly($amountvalue, $customer, $mandate, $description, $startdate, $times)
     {
         $http = new Client();
         $url = $this->mollie['url']."/customers/".$customer."/subscriptions";
@@ -203,6 +261,9 @@ class MollieTable extends Table
             "description" => $description
     
         );
+        if (($times != "0") and (intval($times)!=0)) {
+            $datas["times"] = intval($times);
+        }
         $json = json_encode($datas);
 
         $response = $http->post($url, $json, [
@@ -241,6 +302,36 @@ class MollieTable extends Table
                 ]
         ]);
         $infos = $response->getJson();
+        //var_dump($infos);
+        return $infos;
+    }
+
+    public function update_subscription($subscription, $customer, $amountvalue, $times)
+    {
+        $http = new Client();
+        $url = $this->mollie['url']."/customers/".$customer."/subscriptions/".$subscription;
+        $found = false;
+        $amount = array(
+            "currency" => "EUR",
+            "value" => $amountvalue
+        );
+        
+        $datas = array(
+            "amount" => $amount
+    
+        );
+        if (($times != "0") and (intval($times)!=0)) {
+            $datas["times"] = intval($times);
+        }
+        $json = json_encode($datas);
+
+        $response = $http->post($url, $json, [
+            'headers' => [
+                'Authorization' => 'Bearer '.$this->mollie['key'],
+                'Content-Type' => 'application/json'
+                ]
+        ]);
+        $infos = $response->getJson();
         return $infos;
     }
 
@@ -256,5 +347,48 @@ class MollieTable extends Table
         ]);
         $infos = $response->getJson();
         return $infos;
+    }
+
+
+    public function calculAmountChanges()
+    {
+        $total = 0;
+        $subscriptions = $this->get_all_subscriptions("");
+        foreach ($subscriptions as $subscription)  {
+            if ($subscription['status'] == 'active') {
+                if (preg_match('/Change/', $subscription['description'])) {
+                    $total = $total + floatval($subscription['amount']['value']);
+                }
+            }
+        }
+        return $total;
+    }
+
+    public function calculAdhAnnuelle()
+    {
+        $total = 0;
+        $subscriptions = $this->get_all_subscriptions("");
+        foreach ($subscriptions as $subscription)  {
+            if ($subscription['status'] == 'active') {
+                if (preg_match('/Adhésion Florain Annuelle/', $subscription['description'])) {
+                    $total = $total + floatval($subscription['amount']['value']);
+                }
+            }
+        }
+        return $total;
+    }
+
+    public function calculAdhMensuelle()
+    {
+        $total = 0;
+        $subscriptions = $this->get_all_subscriptions("");
+        foreach ($subscriptions as $subscription)  {
+            if ($subscription['status'] == 'active') {
+                if (preg_match('/Adhésion Florain Mensuelle/', $subscription['description'])) {
+                    $total = $total + floatval($subscription['amount']['value']);
+                }
+            }
+        }
+        return $total;
     }
 }

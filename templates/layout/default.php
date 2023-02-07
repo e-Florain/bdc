@@ -75,6 +75,18 @@ $cakeDescription = 'Florain - Portail';
         if ($session->read('User.role') == "root") {
         ?>
         <li class="tab"><a 
+        <?php  if ($this->request->getParam('controller') == "Dashboard" ) {
+            echo 'class="active"';
+        }
+        ?>
+        href="/dashboard/index">Board</a></li>
+        <?php
+        }
+        ?>
+        <?php
+        if ($session->read('User.role') == "root") {
+        ?>
+        <li class="tab"><a 
         <?php  if ($this->request->getParam('controller') == "Bdcs" ) {
             echo 'class="active"';
         }
@@ -112,6 +124,30 @@ $cakeDescription = 'Florain - Portail';
         href="/subscriptions/index">Mollie - Prélèvements</a></li>
         <?php
         }
+        ?> 
+        <?php
+        if ($session->read('User.role') == "root") {
+        ?>
+        <li class="tab"><a 
+        <?php  if ($this->request->getParam('controller') == "Customers" ) {
+            echo 'class="active"';
+        }
+        ?>
+        href="/customers/index">Mollie - Customers</a></li>
+        <?php
+        }
+        ?>
+        <?php
+        if ($session->read('User.role') == "root") {
+        ?>
+        <li class="tab"><a 
+        <?php  if ($this->request->getParam('controller') == "Mandates" ) {
+            echo 'class="active"';
+        }
+        ?>
+        href="/mandates/index">Mollie - Mandates</a></li>
+        <?php
+        }
         ?>
         <?php
         if ($session->read('User.role') == "root") {
@@ -122,18 +158,6 @@ $cakeDescription = 'Florain - Portail';
         }
         ?>
         href="/payments/onepercent">1%</a></li>
-        <?php
-        }
-        ?>
-        <?php
-        if ($session->read('User.role') == "root") {
-        ?>
-        <li class="tab"><a 
-        <?php  if ($this->request->getParam('controller') == "Settlements" ) {
-            echo 'class="active"';
-        }
-        ?>
-        href="/settlements/index">Mollie - Settlements</a></li>
         <?php
         }
         ?>

@@ -36,6 +36,18 @@
         </div>
       </div>
       <div class="row">
+        <div class="input-field col s3">
+          <input name="startdate" value="<?php echo $startdate; ?>" type="text" id="startdate" required class="datepicker">
+          <label for="startdate">Début du prélèvement</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s6">
+          <input name="times" id="times" type="text" value="0" required class="validate">
+          <label for="times">Nombre de prélèvements</label>
+        </div>
+      </div>
+      <div class="row">
         <div class="input-field col s6">
           <input name="amount" id="amount" type="text" required class="validate">
           <label for="amount">Montant</label>

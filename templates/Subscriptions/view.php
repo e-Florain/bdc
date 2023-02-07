@@ -70,6 +70,14 @@
         </td>
     </tr>
     <tr>
+        <td>Nombre de prélèvements</td>
+        <td>
+            <?php
+                echo $subscription['times'];
+            ?>
+        </td>
+    </tr>
+    <tr>
         <td>Id du mandat</td>
         <td>
             <?php

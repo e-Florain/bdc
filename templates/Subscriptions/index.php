@@ -91,6 +91,7 @@
             <?php echo $list_customers[$subscription['customerId']]['email']; ?>
         </td>
         <td>
+            <?php echo '<a href="/subscriptions/edit/'.$subscription['customerId'].'/'.$subscription['id'].'" ><i class="material-icons">edit</i></a>'; ?>
             <?php echo '<a href="/subscriptions/delete?subscription_id='.$subscription['id'].'&customer_id='.$subscription['customerId'].'"><i class="material-icons">delete</i></a>'; ?>
         </td>
     </tr>
